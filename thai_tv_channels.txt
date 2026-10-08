@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thai TV Live Channels</title>
+    <!-- Video.js CSS -->
+    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Kanit', sans-serif;
+        }
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        header {
+            background-color: #1e293b;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #334155;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .player-container {
+            flex: 3;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 20px;
+        }
+        .video-wrapper {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 16/9;
+            background-color: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+        .video-js {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .current-info {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .current-info img {
+            height: 30px;
+            object-fit: contain;
+        }
+        .sidebar {
+            flex: 1;
+            background-color: #1e293b;
+            border-left: 2px solid #334155;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .category-title {
+            background-color: #334155;
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+        }
+        .channel-list {
+            list-style: none;
+        }
+        .channel-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #334155;
+            transition: all 0.2s ease;
+            gap: 15px;
+        }
+        .channel-item:hover {
+            background-color: #475569;
+        }
+        .channel-item.active {
+            background-color: #0284c7;
+            border-left: 4px solid #38bdf8;
+        }
+        .logo-container {
+            width: 50px;
+            height: 50px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 4px;
+            flex-shrink: 0;
+        }
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .channel-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        @media (max-width: 992px) {
+            body {
+                overflow: auto;
+                height: auto;
+            }
+            .main-container {
+                flex-direction: column;
+                height: auto;
+            }
+            .player-container {
+                padding: 10px;
+            }
+            .sidebar {
+                border-left: none;
+                border-top: 2px solid #334155;
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>📺 THAI TV LIVE STREAM PLAYER</header>
+
+    <div class="main-container">
+        <!-- เครื่องเล่นวิดีโอ -->
+        <div class="player-container">
+            <div class="video-wrapper">
+                <video id="tv-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" poster="">
+                    <source src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" type="application/x-mpegURL">
+                    <p class="vjs-no-js">กรุณาเปิดใช้งาน JavaScript หรือใช้เบราว์เซอร์ที่รองรับ HTML5 Video</p>
+                </video>
+            </div>
+            <div class="current-info" id="current-channel-info">
+                กำลังรับชม: <span id="current-channel-name">ช่อง 3 HD (ตัวอย่างระบบ)</span>
+            </div>
+        </div>
+
+        <!-- รายการช่องด้านข้าง -->
+        <div class="sidebar">
+            <!-- หมวดหมู่บันเทิงและวาไรตี้ -->
+            <div class="category-title">หมวดบันเทิงและวาไรตี้</div>
+            <ul class="channel-list">
+                <li class="channel-item active" data-src="https://live-us1.thaimomo.com/live-as/ch3hd-3/chunklist_w1980809236.m3u8" data-name="ช่อง 3 HD">
+                    <div class="logo-container">
+                        <img src="https://raw.githubusercontent.com/zaxacaasada/logotv/refs/heads/main/hd-ch3.png" alt="ช่อง 3 HD">
+                    </div>
+                    <div class="channel-name">ช่อง 3 HD</div>
+                </li>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/ch7hd-3/chunklist_w354401282.m3u8" data-name="ช่อง 7 HD">
+                    <div class="logo-container">
+                        <img src="https://cdn.imgchest.com/files/7d23eb5e80b1.png" alt="ช่อง 7 HD">
+                    </div>
+                    <div class="channel-name">ช่อง 7 HD</div>
+                </li>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chone-3/chunklist_w203640396.m3u8" data-name="ช่อง One 31">
+                    <div class="logo-container">
+                        <img src="https://img2.pic.in.th/imagesb55dc0f58d21dfbf.jpeg" alt="ช่อง One 31">
+                    </div>
+                    <div class="channel-name">ช่อง One 31</div>
+                </li>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chworkpointt-3/playlist.m3u8" data-name="Workpoint TV">
+                    <div class="logo-container">
+                        <img src="https://img2.pic.in.th/images750643c1c7813c98.png" alt="Workpoint TV">
+                    </div>
+                    <div class="channel-name">Workpoint TV</div>
+                </li>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chmono29-2/chunklist_w2144099935.m3u8" data-name="Mono 29">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-1b8c8582d1ef39ec0.jpeg" alt="Mono 29">
+                    </div>
+                    <div class="channel-name">Mono 29</div>
+                </li>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chgmmchannel-3/playlist.m3u8" data-name="GMM 25">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-2e59074a6bd92bfa6.jpeg" alt="GMM 25">
+                    </div>
+                    <div class="channel-name">GMM 25</div>
+                </li>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chNation-3/chunklist_w1804287308.m3u8" data-name="nation">
+                    <div class="logo-container">
+                        <img src="https://i.postimg.cc/Kvfp36GN/dawn-hold.png" alt="nation">
+                    </div>
+                    <div class="channel-name">nation</div>
+                </li>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/cheight-3/chunklist_w369383265.m3u8" data-name="ช่อง 8">
+                    <div class="logo-container">
+                        <img src="https://img2.pic.in.th/images-3ef865d485edb76ae.jpeg" alt="ช่อง 8">
+                    </div>
+                    <div class="channel-name">ช่อง 8</div>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chTrue4u-2/chunklist_w1703820609.m3u8" data-name="TRUE 4U">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-44da3250d4e83fa92.jpeg" alt="TRUE 4U">
+                    </div>
+                    <div class="channel-name">TRUE 4U</div>
+                </li>
+               
+            </ul>
+
+            <!-- หมวดหมู่ข่าวสาร -->
+            <div class="category-title">หมวดข่าวสาร</div>
+            <ul class="channel-list">
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chthairathhd-3/chunklist_w1021613427.m3u8" data-name="Thairath TV">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-1e9c8a1936ab1aed7.png" alt="Thairath TV">
+                    </div>
+                    <div class="channel-name">Thairath TV</div>
+                </li>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chamarin-3/chunklist_w1517877417.m3u8" data-name="Amarin TV">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/-1d27c9220ceefa3b7.png" alt="Amarin TV">
+                    </div>
+                    <div class="channel-name">Amarin TV</div>
+                </li>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chtnn24-2/chunklist_w1680535099.m3u8" data-name="TNN 16">
+                    <div class="logo-container">
+                        <img src="https://img2.pic.in.th/images-2b957cbf0903cb1f3.png" alt="TNN 16">
+                    </div>
+                    <div class="channel-name">TNN 16</div>
+                </li>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chmcothd-3/chunklist_w2144014371.m3u8" data-name="PPTV HD 36">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-5aef444f554e0c648.jpeg" alt="PPTV HD 36">
+                    </div>
+                    <div class="channel-name">PPTV HD 36</div>
+                 </li>
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chtsport-1/chunklist_w154699027.m3u8" data-name="t sport">
+                    <div class="logo-container">
+                        <img src="https://img2.pic.in.th/-2d51e985a04df988c.png" alt="t sport">
+                    </div>
+                    <div class="channel-name">t sport</div>
+                     </li>
+                <li class="channel-item" data-src="https://live.thaichaiyo.tv/tcy/live-transmux.m3u8" data-name="thai chaiyo">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-63642e689447b0de4.jpeg" alt="thai chaiyo">
+                    </div>
+                    <div class="channel-name">thai chaiyo</div>
+                 </li>
+                <li class="channel-item" data-src="https://tv-live.tpchannel.org/live/tv_720p.m3u8?vhost=tv-live.tpchannel.org" data-name="tptv">
+                    <div class="logo-container">
+                        <img src="https://img2.pic.in.th/images-77d1edb55dae102f0.jpeg" alt="tptv">
+                    </div>
+                    <div class="channel-name">tptv</div>
+                    </li>
+                <li class="channel-item" data-src="https://live.topnews.co.th/hls/topnews_a_720.m3u8" data-name="topnew">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-8731150ef543df48b.jpeg" alt="topnew">
+                    </div>
+                    <div class="channel-name">topnew</div>
+                </li>
+           
+
+            <!-- หมวดหมู่สาธารณะและสารคดี -->
+            <div class="category-title">หมวดสาธารณะและสารคดี</div>
+            <ul class="channel-list">
+                <li class="channel-item" data-src="https://live-us1.thaimomo.com/live-as/chThaipbshd-2/chunklist_w1146485812.m3u8" data-name="Thai PBS">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-3b932a27b7b84f52f.png" alt="Thai PBS">
+                    </div>
+                    <div class="channel-name">Thai PBS</div>
+                </li>
+                <li class="channel-item" data-src="https://cdn-edge.iiptvcdn.com/live_event/smil:f180-054a-38d7-ce66-f7cf.smil/chunklist_w1199631278_b2128000.m3u8" data-                 name="NBT">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-9899178f331677c89.jpeg" alt="NBT">
+                    </div>
+                    <div class="channel-name">NBTchiang mai</div>
+                </li> 
+                <li class="channel-item" data-src="https://cdn-edge.iiptvcdn.com/live_event/smil:4f6e-aa34-2034-5492-c82d.smil/chunklist_w544889532_b2128000.m3u8" data-                         name="NBT">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-9899178f331677c89.jpeg" alt="NBTchiang mai">
+                    </div>
+                    <div class="channel-name">NBTchiang mai</div>
+                   </li> 
+                <li class="channel-item" data-src="https://cdn-edge.iiptvcdn.com/live_event/smil:4f6e-aa34-2034-5492-c82d.smil/chunklist_w544889532_b2128000.m3u8" data-                         name="NBTworld">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-9899178f331677c89.jpeg" alt="NBTworld">
+                    </div>
+                    <div class="channel-name">NBTchiang NBTworld</div>
+                    </li> 
+                <li class="channel-item" data-src="https://cdn-th-vip.livestreaming.in.th/policetv/policetv/chunklist_w1838926141.m3u8" data-name=policetv">
+                    <div class="logo-container">
+                        <img src="https://img2.pic.in.th/images-10a62866482505e165.jpeg" alt="policetv">
+                    </div>
+                    <div class="channel-name">policetv</div>
+                       </li> 
+                <li class="channel-item" data-src="https://cdn-th-vip2.livestreaming.in.th/watsanghathan/watsanghathan/chunklist_w340910741.m3u8" data-name="sbb tv">
+                    <div class="logo-container">
+                        <img src="https://img2.pic.in.th/images-11754ddb50b3cdeb78.jpeg" alt="sbb tv">
+                    </div>
+                    <div class="channel-name">sbb tv</div>
+                       </li> 
+                <li class="channel-item" data-src="https://live.bangkokstream.com:19360/suwannabhumi/suwannabhumi.m3u8" data-name="suwannaphumi">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-126a8af4e93c5c3921.jpeg" alt="suwannaphumi">
+                    </div>
+                    <div class="channel-name">suwannaphumi</div>
+                </li>
+                <li class="channel-item" data-src=https://live-us1.thaimomo.com/live-as/ch5hd-2/chunklist_w246604100.m3u8" data-name="ททบ.5 HD">
+                    <div class="logo-container">
+                        <img src="https://img2.pic.in.th/images-45999ac655dcc853d.png" alt="ททบ.5 HD">
+                    </div>
+                    <div class="channel-name">ททบ.5 HD</div>
+                 </li>
+                <li class="channel-item" data-src="https://vdo.plathong.net/tvmuslim/tvmuslim/playlist.m3u8" data-name="TV MUSLIM">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-578805077a449b142.png" alt="TV MUSLIM">
+                    </div>
+                    <div class="channel-name">TV MUSLIM</div>
+                 </li>
+                <li class="channel-item" data-src="https://fastly.live.brightcove.com/1846248737588002042/ap-southeast-1/6075037809001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoibzRoaGc2LmVncmVzcy5zYjBmOGsiLCJhY2NvdW50X2lkIjoiNjA3NTAzNzgwOTAwMSIsImVobiI6ImZhc3RseS5saXZlLmJyaWdodGNvdmUuY29tIiwiaXNzIjoiYmxpdmUtcGxheWJhY2stc291cmNlLWFwaSIsInN1YiI6InBhdGhtYXB0b2tlbiIsImF1ZCI6WyI2MDc1MDM3ODA5MDAxIl0sImp0aSI6IjE4NDYyNDg3Mzc1ODgwMDIwNDIifQ.HbjGHxGv87ivAdsCtAdEDjj2SVCfRnCUMYWn2fCkVPY/chunklist__2.m3u8" data-name="VIPA">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-138e22df6901deee4a.jpeg" alt="VIPA">
+                    </div>
+                    <div class="channel-name">VIPA</div>]
+                  </li>
+                <li class="channel-item" data-src="https://vdo.plathong.net/flash7057/flash7057/playlist.m3u8" data-name="ZABB">
+                    <div class="logo-container">
+                        <img src="https://img2.pic.in.th/images-140694fb3e6544eced.jpeg" alt="ZABB">
+                    </div>
+                    <div class="channel-name">ZABB</div>
+                 </li>
+                <li class="channel-item" data-src="https://live.x2.co.th/live/13livetv-th_720p/index.m3u8" data-name="13 SIAM THAI">
+                    <div class="logo-container">
+                        <img src="https://img1.pic.in.th/images/images-15.jpeg" alt="13 SIAM THAI">
+                    </div>
+                    <div class="channel-name">13 SIAM THAI</div>
+                </li>
+        </div>
+    </div>
+
+    <!-- Video.js JavaScript -->
+    <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // เริ่มต้นเครื่องเล่นวิดีโอ Video.js
+            const player = videojs('tv-player', {
+                fluid: true,
+                playbackRates: [0.5, 1, 1.5, 2]
+            });
+
+            const channelItems = document.querySelectorAll('.channel-item');
+            const currentChannelName = document.getElementById('current-channel-name');
+
+            // เพิ่ม Event Listener ให้กับรายการช่องทั้งหมด
+            channelItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // เอา class active ออกจากช่องเดิม
+                    document.querySelector('.channel-item.active').classList.remove('active');
+                    // ใส่ class active ให้ช่องที่ถูกกด
+                    this.classList.add('active');
+
+                    // ดึงค่าลิงก์สตรีมและชื่อช่อง
+                    const streamUrl = this.getAttribute('data-src');
+                    const channelName = this.getAttribute('data-name');
+
+                    // เปลี่ยนซอร์สวิดีโอและเล่นใหม่
+                    player.src({
+                        src: streamUrl,
+                        type: 'application/x-mpegURL'
+                    });
+                    player.play();
+
+                    // อัปเดตชื่อช่องบนหน้าจอ
+                    currentChannelName.textContent = channelName;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
